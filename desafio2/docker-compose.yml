@@ -1,0 +1,48 @@
+version: '3'
+
+services:
+
+  app:
+    build:
+      context: node
+    container_name: app
+    entrypoint: dockerize -wait tcp://db:3306 -timeout 60s docker-entrypoint.sh index.js 
+    networks: 
+      - full-network
+    volumes: 
+      - ./node:/usr/src/app
+    tty: true
+    depends_on: 
+       - db
+
+  db:
+    build:
+      context: .
+      dockerfile: Dockerfile.mysql
+    container_name: db
+    restart: always
+    tty: true
+    volumes: 
+      - ./mysql:/var/lib/mysql
+    environment: 
+      - MYSQL_DATABASE=nodedb
+      - MYSQL_ROOT_PASSWORD=root
+    networks: 
+      - full-network
+
+  nginx:
+    build: 
+      context: nginx
+      dockerfile: Dockerfile
+    image: cbotacin/nginx
+    container_name: nginx
+    networks: 
+      - full-network
+    ports: 
+      - "8080:80"
+    depends_on: 
+       - app
+
+networks: 
+  full-network:
+    driver: bridge   
