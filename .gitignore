@@ -1,2 +1,3 @@
 *.log
 mysql/
+node_modules/
