@@ -2,6 +2,8 @@ FROM node:15
 
 WORKDIR /usr/src/app
 
+RUN npm install express mysql2
+
 COPY . .
 
 RUN apt-get update && apt-get install -y wget
@@ -14,4 +16,4 @@ RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSI
 EXPOSE 3000
 
 
-ENTRYPOINT ["node","index.js"]
+CMD ["node","index.js"]
